@@ -21,11 +21,11 @@ class AuctionHouseTest {
     void reportContainsValues() {
         AuctionHouse house = new AuctionHouse("H");
         Auctioneer a = new Auctioneer(1, "A");
-        Bidder b = new Bidder(2, "B", 1000, new AggressiveStrategy());
+        Bidder b = new Bidder(2, "B", 1000, new AggressiveStrategy(), ItemCategory.ANY);
         house.registerUser(a);
         house.registerUser(b);
 
-        Item item = new Item(1, "PC", "Tech", 800, 300);
+        Item item = new Item(1, "PC", ItemCategory.ELEKTRONIK, 800, 300);
         house.createAuction(item, a, List.of(b), 50);
         house.startSimulation(1, 1);
 

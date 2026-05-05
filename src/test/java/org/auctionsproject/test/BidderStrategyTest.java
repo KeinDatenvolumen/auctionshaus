@@ -9,13 +9,13 @@ class BidderStrategyTest {
 
     @Test
     void bidderCannotAffordPrice() {
-        Bidder b = new Bidder(1, "X", 100, new AggressiveStrategy());
+        Bidder b = new Bidder(1, "X", 100, new AggressiveStrategy(), ItemCategory.ANY);
         assertFalse(b.canAfford(150));
     }
 
     @Test
     void aggressiveAcceptsEarlierThanConservative() {
-        Item item = new Item(1, "Tablet", "Elec", 1000, 500);
+        Item item = new Item(1, "Tablet", ItemCategory.ELEKTRONIK, 1000, 500);
 
         BidStrategy aggr = new AggressiveStrategy();
         BidStrategy cons = new ConservativeStrategy();

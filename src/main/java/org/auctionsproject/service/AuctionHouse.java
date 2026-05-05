@@ -4,6 +4,7 @@ import org.auctionsproject.model.*;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -49,34 +50,61 @@ public class AuctionHouse {
     }
 
     public void startSimulation(int parallelAuctions, long tickMillis) {
-        List<Auction> runnableAuctions = auctions.stream()
-                .filter(a -> a.getStatus() == AuctionStatus.WAITING)
-                .toList();
+        BlockingQueue<Auction> queue = new LinkedBlockingQueue<>();
+        AtomicBoolean producerDone = new AtomicBoolean(false);
 
-        if (runnableAuctions.isEmpty()) {
-            emit("Keine WAITING-Auktionen vorhanden.");
-            return;
-        }
+        Thread producer = new Thread(() -> {
+            auctions.stream()
+                    .filter(a -> a.getStatus() == AuctionStatus.WAITING)
+                    .forEach(a -> {
+                        try {
+                            queue.put(a);
+                            emit("Queue: Auktion #" + a.getId() + " eingeplant");
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    });
+            producerDone.set(true);
+        });
 
-        emit("Simulation gestartet mit " + runnableAuctions.size() + " Auktionen, parallel=" + parallelAuctions);
+        producer.start();
+        emit("Simulation gestartet (Producer/Consumer)");
 
         ExecutorService pool = Executors.newFixedThreadPool(parallelAuctions);
-        List<Callable<Void>> tasks = runnableAuctions.stream()
-                .map(a -> (Callable<Void>) () -> {
-                    runAuction(a, tickMillis);
-                    return null;
-                })
-                .toList();
 
-        try {
-            pool.invokeAll(tasks);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            emit("Simulation unterbrochen.");
-        } finally {
-            pool.shutdown();
+        for (int i = 0; i < parallelAuctions; i++) {
+            pool.submit(() -> {
+                while (true) {
+                    try {
+                        Auction auction = queue.poll(300, TimeUnit.MILLISECONDS);
+                        if (auction == null) {
+                            if (producerDone.get() && queue.isEmpty()) break;
+                            continue;
+                        }
+                        runAuction(auction, tickMillis);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
+            });
         }
 
+        try {
+            producer.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        pool.shutdown();
+        try {
+            if (!pool.awaitTermination(1, TimeUnit.MINUTES)) {
+                pool.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            pool.shutdownNow();
+        }
         emit("Simulation beendet.");
     }
 

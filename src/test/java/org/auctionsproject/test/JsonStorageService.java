@@ -21,10 +21,11 @@ class JsonStorageServiceTest {
 
         List<User> users = List.of(
                 new Auctioneer(1, "A"),
-                new Bidder(2, "B", 500, new RandomStrategy())
+                new Bidder(2, "B", 500, new RandomStrategy(), ItemCategory.ANY)
         );
 
-        Item item = new Item(1, "Cam", "Tech", 300, 150);
+
+        Item item = new Item(1, "Cam", ItemCategory.ELEKTRONIK, 300, 150);
         Auction auction = new Auction(1, item, (Auctioneer) users.get(0), List.of((Bidder) users.get(1)), 10);
 
         SimulationReport report = new SimulationReport();

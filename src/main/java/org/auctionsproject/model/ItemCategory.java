@@ -6,5 +6,7 @@ public enum ItemCategory {
     BUCH,
     MODE,
     MOEBEL,
-    SONSTIGES
+    SONSTIGES,
+
+    ANY // nur für Bieter-Interesse
 }

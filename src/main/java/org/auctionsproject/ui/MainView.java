@@ -80,7 +80,10 @@ public class MainView {
         cDetails.setCellValueFactory(data -> {
             if (data.getValue() instanceof Bidder b) {
                 return new javafx.beans.property.SimpleStringProperty(
-                        "Budget=" + String.format("%.2f", b.getBudget()) + ", Strategie=" + b.getStrategyName());
+                        "Budget=" + String.format("%.2f", b.getBudget())
+                                + ", Strategie=" + b.getStrategyName()
+                                + ", Interesse=" + b.getPreferredCategory()
+                );
             }
             return new javafx.beans.property.SimpleStringProperty("-");
         });
@@ -168,6 +171,7 @@ public class MainView {
         load.setOnAction(e -> {
             try {
                 StateSnapshot s = storageService.loadAll("auction_state.json");
+                storageService.relink(s);
                 auctionHouse.getUsers().clear();
                 auctionHouse.getUsers().addAll(s.getUsers());
 
@@ -214,12 +218,17 @@ public class MainView {
         ComboBox<String> strategyBox = new ComboBox<>(FXCollections.observableArrayList("Aggressive", "Conservative", "Random"));
         strategyBox.getSelectionModel().select("Random");
 
+        ComboBox<ItemCategory> interestBox = new ComboBox<>();
+        interestBox.getItems().setAll(ItemCategory.values());
+        interestBox.getSelectionModel().select(ItemCategory.ANY);
+
         GridPane g = new GridPane();
         g.setHgap(8);
         g.setVgap(8);
         g.addRow(0, new Label("Name:"), nameField);
         g.addRow(1, new Label("Budget:"), budgetField);
         g.addRow(2, new Label("Strategie:"), strategyBox);
+        g.addRow(3, new Label("Interesse (Kategorie):"), interestBox);
         dialog.getDialogPane().setContent(g);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -232,7 +241,13 @@ public class MainView {
                     case "Conservative" -> new ConservativeStrategy();
                     default -> new RandomStrategy();
                 };
-                return new Bidder(id, nameField.getText().trim(), budget, strategy);
+                return new Bidder(
+                        id,
+                        nameField.getText().trim(),
+                        budget,
+                        strategy,
+                        interestBox.getValue()
+                );
             }
             return null;
         });
@@ -258,7 +273,14 @@ public class MainView {
 
         TextField itemName = new TextField("Laptop");
         ComboBox<ItemCategory> catBox = new ComboBox<>();
-        catBox.getItems().setAll(ItemCategory.values());
+        catBox.getItems().setAll(
+                ItemCategory.ELEKTRONIK,
+                ItemCategory.AUTO,
+                ItemCategory.BUCH,
+                ItemCategory.MODE,
+                ItemCategory.MOEBEL,
+                ItemCategory.SONSTIGES
+        );
         catBox.getSelectionModel().select(ItemCategory.ELEKTRONIK);
 
         TextField start = new TextField("1000");
@@ -299,7 +321,7 @@ public class MainView {
                 Item item = new Item(
                         itemId,
                         itemName.getText().trim(),
-                        catBox.getValue().name(),
+                        catBox.getValue(),
                         Double.parseDouble(start.getText().trim()),
                         Double.parseDouble(min.getText().trim())
                 );
@@ -330,9 +352,9 @@ public class MainView {
     private void seedDemoUsers() {
         auctionHouse.registerUser(new Auctioneer(1, "Alice"));
         auctionHouse.registerUser(new Auctioneer(2, "Bob"));
-        auctionHouse.registerUser(new Bidder(3, "Clara", 900, new AggressiveStrategy()));
-        auctionHouse.registerUser(new Bidder(4, "David", 650, new ConservativeStrategy()));
-        auctionHouse.registerUser(new Bidder(5, "Elias", 500, new RandomStrategy()));
+        auctionHouse.registerUser(new Bidder(3, "Clara", 900, new AggressiveStrategy(), ItemCategory.ELEKTRONIK));
+        auctionHouse.registerUser(new Bidder(4, "David", 650, new ConservativeStrategy(), ItemCategory.BUCH));
+        auctionHouse.registerUser(new Bidder(5, "Elias", 500, new RandomStrategy(), ItemCategory.ANY));
     }
 
     private void refreshTables() {

@@ -11,7 +11,7 @@ class AuctionTest {
 
     @Test
     void auctionSoldWhenBidderAccepts() {
-        Item item = new Item(1, "Phone", "Electronics", 500, 200);
+        Item item = new Item(1, "Phone", ItemCategory.ELEKTRONIK, 500, 200);
         Auctioneer a = new Auctioneer(1, "Auc");
 
         // Garantiert true, solange Budget reicht
@@ -27,7 +27,7 @@ class AuctionTest {
             }
         };
 
-        Bidder b = new Bidder(2, "Bid", 600, alwaysBuy);
+        Bidder b = new Bidder(2, "Bid", 600, alwaysBuy, ItemCategory.ANY);
 
         Auction auction = new Auction(1, item, a, List.of(b), 20);
         auction.start();
@@ -40,9 +40,9 @@ class AuctionTest {
 
     @Test
     void auctionWithdrawnWhenBelowMinPrice() {
-        Item item = new Item(1, "Book", "Media", 100, 80);
+        Item item = new Item(1, "Book", ItemCategory.BUCH, 100, 80);
         Auctioneer a = new Auctioneer(1, "A");
-        Bidder b = new Bidder(2, "B", 10, new ConservativeStrategy());
+        Bidder b = new Bidder(2, "B", 10, new ConservativeStrategy(), ItemCategory.ANY);
 
         Auction auction = new Auction(1, item, a, List.of(b), 15);
         auction.start();
