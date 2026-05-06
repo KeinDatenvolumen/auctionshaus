@@ -5,6 +5,7 @@ import org.auctionsproject.model.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.DoubleAdder;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ public class AuctionHouse {
     private final List<Auction> auctions = new CopyOnWriteArrayList<>();
     private final List<Auction> finishedAuctions = new CopyOnWriteArrayList<>();
     private final double commissionRate = 0.01;
-    private double totalCommission = 0.0;
+    private final DoubleAdder totalCommission = new DoubleAdder();
 
     // NEU: UI-Log Callback
     private Consumer<String> eventListener;
@@ -84,7 +85,7 @@ public class AuctionHouse {
      *
      * @return Gesamtprovision.
      */
-    public double getTotalCommission() { return totalCommission; }
+    public double getTotalCommission() { return totalCommission.sum(); }
 
     /**
      * Registriert einen Nutzer im Auktionshaus.
@@ -194,7 +195,7 @@ public class AuctionHouse {
             boolean soldNow = false;
             for (Bidder bidder : shuffled) {
                 if (auction.trySellToBidder(bidder)) {
-                    totalCommission += calculateCommission(auction.getSoldPrice());
+                    totalCommission.add(calculateCommission(auction.getSoldPrice()));
                     emit("Auktion #" + auction.getId() + " SOLD an " + bidder.getName()
                             + " für " + fmt(auction.getSoldPrice())
                             + " | Provision=" + fmt(calculateCommission(auction.getSoldPrice())));
@@ -282,7 +283,7 @@ public class AuctionHouse {
                 .collect(Collectors.toSet());
         report.setUniqueBidders(bidderIds.size());
 
-        report.setTotalCommission(totalCommission);
+        report.setTotalCommission(totalCommission.sum());
         return report;
     }
 
