@@ -39,14 +39,14 @@ public class Bidder extends User {
      *
      * @return Budget.
      */
-    public double getBudget() { return budget; }
+    public synchronized double getBudget() { return budget; }
 
     /**
      * Setzt das Budget.
      *
      * @param budget neues Budget.
      */
-    public void setBudget(double budget) { this.budget = budget; }
+    public synchronized void setBudget(double budget) { this.budget = budget; }
 
     /**
      * Liefert die bevorzugte Kategorie.
@@ -68,7 +68,7 @@ public class Bidder extends User {
      * @param price zu prüfender Preis.
      * @return {@code true}, wenn das Budget ausreicht.
      */
-    public boolean canAfford(double price) { return budget >= price; }
+    public synchronized boolean canAfford(double price) { return budget >= price; }
 
     /**
      * Reduziert das Budget um den angegebenen Betrag.
@@ -76,7 +76,7 @@ public class Bidder extends User {
      * @param amount abzuziehender Betrag.
      * @throws InsufficientBudgetException wenn der Betrag das Budget überschreitet.
      */
-    public void reduceBudget(double amount) {
+    public synchronized void reduceBudget(double amount) {
         if (amount > budget) {
             throw new InsufficientBudgetException("Budget nicht ausreichend: " + getName());
         }
@@ -91,7 +91,7 @@ public class Bidder extends User {
      * @return {@code true}, wenn der Bieter kaufen möchte.
      */
     public boolean decide(Item item, double currentPrice) {
-        boolean accept = getStrategy().acceptPrice(item, currentPrice, budget);
+        boolean accept = getStrategy().acceptPrice(item, currentPrice, getBudget());
         if (!accept) return false;
 
         // 50% Malus, wenn Kategorie nicht passt
