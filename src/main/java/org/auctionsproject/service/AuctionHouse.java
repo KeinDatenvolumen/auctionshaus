@@ -8,6 +8,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * Zentrale Service-Klasse zur Verwaltung von Nutzern, Auktionen und Simulationen.
+ */
 public class AuctionHouse {
     private final String name;
     private final List<User> users = new CopyOnWriteArrayList<>();
@@ -19,28 +22,86 @@ public class AuctionHouse {
     // NEU: UI-Log Callback
     private Consumer<String> eventListener;
 
+    /**
+     * Erstellt ein neues Auktionshaus mit dem angegebenen Namen.
+     *
+     * @param name Anzeigename des Auktionshauses.
+     */
     public AuctionHouse(String name) {
         this.name = name;
     }
 
+    /**
+     * Registriert einen Listener für Status- und Logereignisse.
+     *
+     * @param eventListener Callback für UI- oder Konsolenlogs.
+     */
     public void setEventListener(Consumer<String> eventListener) {
         this.eventListener = eventListener;
     }
 
+    /**
+     * Emittiert eine Nachricht, falls ein Listener registriert ist.
+     *
+     * @param msg Log- oder Statusmeldung.
+     */
     private void emit(String msg) {
         if (eventListener != null) {
             eventListener.accept(msg);
         }
     }
 
+    /**
+     * Liefert den Namen des Auktionshauses.
+     *
+     * @return Name des Auktionshauses.
+     */
     public String getName() { return name; }
+
+    /**
+     * Liefert alle registrierten Nutzer.
+     *
+     * @return Liste der Nutzer.
+     */
     public List<User> getUsers() { return users; }
+
+    /**
+     * Liefert alle erstellten Auktionen.
+     *
+     * @return Liste der Auktionen.
+     */
     public List<Auction> getAuctions() { return auctions; }
+
+    /**
+     * Liefert alle abgeschlossenen Auktionen.
+     *
+     * @return Liste der abgeschlossenen Auktionen.
+     */
     public List<Auction> getFinishedAuctions() { return finishedAuctions; }
+
+    /**
+     * Liefert die bisher aufgelaufene Gesamtprovision.
+     *
+     * @return Gesamtprovision.
+     */
     public double getTotalCommission() { return totalCommission; }
 
+    /**
+     * Registriert einen Nutzer im Auktionshaus.
+     *
+     * @param user Nutzerobjekt.
+     */
     public void registerUser(User user) { users.add(user); }
 
+    /**
+     * Erstellt eine neue Auktion und fügt sie der Verwaltung hinzu.
+     *
+     * @param item        zu versteigerndes Item.
+     * @param auctioneer  Auktionator der Auktion.
+     * @param bidders     teilnehmende Bieter.
+     * @param step        Preisreduktionsschritt.
+     * @return die erzeugte Auktion.
+     */
     public Auction createAuction(Item item, Auctioneer auctioneer, List<Bidder> bidders, double step) {
         int id = auctions.size() + 1;
         Auction auction = new Auction(id, item, auctioneer, bidders, step);
@@ -49,6 +110,12 @@ public class AuctionHouse {
         return auction;
     }
 
+    /**
+     * Startet die Simulation mit parallelen Auktionen und Tick-Intervall.
+     *
+     * @param parallelAuctions Anzahl paralleler Auktionen.
+     * @param tickMillis       Wartezeit zwischen Preissenkungen.
+     */
     public void startSimulation(int parallelAuctions, long tickMillis) {
         BlockingQueue<Auction> queue = new LinkedBlockingQueue<>();
         AtomicBoolean producerDone = new AtomicBoolean(false);
@@ -108,6 +175,12 @@ public class AuctionHouse {
         emit("Simulation beendet.");
     }
 
+    /**
+     * Führt eine einzelne Auktion in einer Worker-Thread-Schleife aus.
+     *
+     * @param auction    Auktion, die ausgeführt werden soll.
+     * @param tickMillis Wartezeit zwischen Preissenkungen.
+     */
     private void runAuction(Auction auction, long tickMillis) {
         if (auction.getStatus() != AuctionStatus.WAITING) return;
 
@@ -154,10 +227,22 @@ public class AuctionHouse {
         finishedAuctions.add(auction);
     }
 
+    /**
+     * Berechnet die Provision für einen Verkaufspreis.
+     *
+     * @param soldPrice Verkaufspreis.
+     * @return Provision gemäß {@code commissionRate}.
+     */
     public double calculateCommission(double soldPrice) {
         return soldPrice * commissionRate;
     }
 
+    /**
+     * Entfernt einen Bieter anhand seiner ID aus Nutzern und wartenden Auktionen.
+     *
+     * @param bidderId ID des zu entfernenden Bieters.
+     * @return {@code true}, wenn ein Nutzer entfernt wurde.
+     */
     public boolean removeBidderById(int bidderId) {
         boolean removedFromUsers = users.removeIf(u -> (u instanceof Bidder) && u.getId() == bidderId);
         for (Auction a : auctions) {
@@ -169,6 +254,11 @@ public class AuctionHouse {
         return removedFromUsers;
     }
 
+    /**
+     * Erstellt einen neuen Bericht auf Basis abgeschlossener Auktionen.
+     *
+     * @return Bericht über die Simulation.
+     */
     public SimulationReport getReport() {
         SimulationReport report = new SimulationReport();
         report.setTotalAuctions(finishedAuctions.size());
@@ -196,6 +286,12 @@ public class AuctionHouse {
         return report;
     }
 
+    /**
+     * Formatiert einen Geldbetrag mit zwei Nachkommastellen.
+     *
+     * @param value zu formatierender Wert.
+     * @return formatierter String.
+     */
     private String fmt(double value) {
         return String.format("%.2f", value);
     }

@@ -8,6 +8,11 @@ import javafx.stage.Stage;
  * JavaFX Startklasse.
  */
 public class App extends Application {
+    /**
+     * Erstellt die Hauptszene und zeigt das Fenster an.
+     *
+     * @param stage primäres JavaFX-Fenster.
+     */
     @Override
     public void start(Stage stage) {
         MainView view = new MainView();
@@ -17,6 +22,11 @@ public class App extends Application {
         stage.show();
     }
 
+    /**
+     * Startet die JavaFX-Runtime.
+     *
+     * @param args Kommandozeilenargumente.
+     */
     public static void main(String[] args) {
         launch();
     }

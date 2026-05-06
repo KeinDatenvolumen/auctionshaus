@@ -6,6 +6,9 @@ import java.util.concurrent.ThreadLocalRandom;
  * Aggressiv: kauft eher früher.
  */
 public class AggressiveStrategy implements BidStrategy {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean acceptPrice(Item item, double currentPrice, double budget) {
         if (currentPrice > budget) return false;
@@ -14,6 +17,9 @@ public class AggressiveStrategy implements BidStrategy {
         return ratio <= randomValue; // kauft früh
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Aggressive";

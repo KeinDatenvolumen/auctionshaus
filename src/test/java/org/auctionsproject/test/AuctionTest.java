@@ -7,8 +7,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests für die {@link org.auctionsproject.model.Auction}-Logik.
+ */
 class AuctionTest {
 
+    /**
+     * Verifiziert, dass eine Auktion verkauft wird, wenn ein Bieter akzeptiert.
+     */
     @Test
     void auctionSoldWhenBidderAccepts() {
         Item item = new Item(1, "Phone", ItemCategory.ELEKTRONIK, 500, 200);
@@ -38,6 +44,9 @@ class AuctionTest {
         assertNotNull(auction.getWinner());
     }
 
+    /**
+     * Verifiziert, dass eine Auktion zurückgezogen wird, wenn der Preis unter das Minimum fällt.
+     */
     @Test
     void auctionWithdrawnWhenBelowMinPrice() {
         Item item = new Item(1, "Book", ItemCategory.BUCH, 100, 80);
