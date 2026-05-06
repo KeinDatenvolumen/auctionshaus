@@ -23,12 +23,24 @@ import java.util.stream.Collectors;
 public class JsonStorageService {
     private final ObjectMapper mapper;
 
+    /**
+     * Erstellt einen JSON-Speicherdienst mit vordefiniertem ObjectMapper.
+     */
     public JsonStorageService() {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
+    /**
+     * Speichert Nutzer, Auktionen und Report in eine JSON-Datei.
+     *
+     * @param path     Zielpfad der Datei.
+     * @param users    Liste der Nutzer.
+     * @param auctions Liste der Auktionen.
+     * @param report   aktueller Report.
+     * @throws IOException wenn das Schreiben fehlschlägt.
+     */
     public void saveAll(String path, List<User> users, List<Auction> auctions, SimulationReport report) throws IOException {
         StateSnapshot snapshot = new StateSnapshot();
         snapshot.setUsers(users);
@@ -37,10 +49,22 @@ public class JsonStorageService {
         mapper.writeValue(new File(path), snapshot);
     }
 
+    /**
+     * Lädt Nutzer, Auktionen und Report aus einer JSON-Datei.
+     *
+     * @param path Pfad zur Datei.
+     * @return geladener Zustand.
+     * @throws IOException wenn das Lesen fehlschlägt.
+     */
     public StateSnapshot loadAll(String path) throws IOException {
         return mapper.readValue(new File(path), StateSnapshot.class);
     }
 
+    /**
+     * Verknüpft deserialisierte Auktionen mit den kanonischen Nutzerinstanzen.
+     *
+     * @param snapshot geladener Zustand.
+     */
     public void relink(StateSnapshot snapshot) {
         Map<Integer, User> userById = snapshot.getUsers().stream()
                 .collect(Collectors.toMap(User::getId, u -> u));

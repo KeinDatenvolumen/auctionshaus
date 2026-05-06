@@ -12,8 +12,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests für {@link org.auctionsproject.persistence.JsonStorageService}.
+ */
 class JsonStorageServiceTest {
 
+    /**
+     * Verifiziert, dass ein kompletter Zustand gespeichert und geladen werden kann.
+     *
+     * @throws Exception falls Schreiben oder Lesen fehlschlägt.
+     */
     @Test
     void saveAndLoadState() throws Exception {
         JsonStorageService s = new JsonStorageService();

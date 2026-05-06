@@ -9,14 +9,23 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests für {@link org.auctionsproject.service.AuctionHouse}.
+ */
 class AuctionHouseTest {
 
+    /**
+     * Prüft die Provisionsberechnung.
+     */
     @Test
     void commissionCalculatedCorrectly() {
         AuctionHouse house = new AuctionHouse("TestHouse");
         assertEquals(10.0, house.calculateCommission(1000.0), 0.0001);
     }
 
+    /**
+     * Prüft, ob der Report Basiswerte nach einer Simulation enthält.
+     */
     @Test
     void reportContainsValues() {
         AuctionHouse house = new AuctionHouse("H");

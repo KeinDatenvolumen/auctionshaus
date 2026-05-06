@@ -34,6 +34,9 @@ public class MainView {
     private final TableView<Auction> auctionsTable = new TableView<>();
     private final TextArea output = new TextArea();
 
+    /**
+     * Erstellt die Hauptansicht und initialisiert UI, Demo-Daten und Listener.
+     */
     public MainView() {
         buildUI();
 
@@ -46,10 +49,18 @@ public class MainView {
         refreshTables();
     }
 
+    /**
+     * Liefert den Wurzelknoten der Ansicht.
+     *
+     * @return Root-Node für die Szene.
+     */
     public Parent getRoot() {
         return root;
     }
 
+    /**
+     * Baut die Gesamtlayout-Struktur mit Tabs und Log-Ausgabe.
+     */
     private void buildUI() {
         root.setPadding(new Insets(10));
 
@@ -65,6 +76,11 @@ public class MainView {
         root.setBottom(output);
     }
 
+    /**
+     * Baut den Tab für die Nutzerverwaltung.
+     *
+     * @return UI-Knoten für den Nutzer-Tab.
+     */
     private Parent buildUsersPane() {
         VBox box = new VBox(8);
         box.setPadding(new Insets(10));
@@ -106,6 +122,11 @@ public class MainView {
         return box;
     }
 
+    /**
+     * Baut den Tab zur Auktionserstellung und -anzeige.
+     *
+     * @return UI-Knoten für den Auktionen-Tab.
+     */
     private Parent buildAuctionsPane() {
         VBox box = new VBox(8);
         box.setPadding(new Insets(10));
@@ -130,6 +151,11 @@ public class MainView {
         return box;
     }
 
+    /**
+     * Baut den Tab zur Simulation und zum Reporting.
+     *
+     * @return UI-Knoten für den Simulation-Tab.
+     */
     private Parent buildSimulationPane() {
         VBox box = new VBox(8);
         box.setPadding(new Insets(10));
@@ -197,6 +223,9 @@ public class MainView {
         return box;
     }
 
+    /**
+     * Öffnet einen Dialog zum Erstellen eines neuen Auktionators.
+     */
     private void addAuctioneerDialog() {
         TextInputDialog d = new TextInputDialog("Auktionator");
         d.setHeaderText("Name Auktionator");
@@ -209,6 +238,9 @@ public class MainView {
         });
     }
 
+    /**
+     * Öffnet einen Dialog zum Erstellen eines neuen Bieters.
+     */
     private void addBidderDialog() {
         Dialog<Bidder> dialog = new Dialog<>();
         dialog.setTitle("Bieter hinzufügen");
@@ -259,6 +291,9 @@ public class MainView {
         });
     }
 
+    /**
+     * Öffnet einen Dialog zum Erstellen einer neuen Auktion.
+     */
     private void addAuctionDialog() {
         List<Auctioneer> auctioneers = users.stream().filter(u -> u instanceof Auctioneer).map(u -> (Auctioneer) u).toList();
         List<Bidder> bidders = users.stream().filter(u -> u instanceof Bidder).map(u -> (Bidder) u).toList();
@@ -342,6 +377,12 @@ public class MainView {
         });
     }
 
+    /**
+     * Erstellt eine zufällige Teilmenge der verfügbaren Bieter.
+     *
+     * @param all alle registrierten Bieter.
+     * @return zufällige, nicht leere Bieter-Teilmenge.
+     */
     private List<Bidder> randomBidderSubset(List<Bidder> all) {
         List<Bidder> copy = new ArrayList<>(all);
         java.util.Collections.shuffle(copy);
@@ -349,6 +390,9 @@ public class MainView {
         return copy.subList(0, size);
     }
 
+    /**
+     * Legt Demo-Nutzer für den Schnellstart an.
+     */
     private void seedDemoUsers() {
         auctionHouse.registerUser(new Auctioneer(1, "Alice"));
         auctionHouse.registerUser(new Auctioneer(2, "Bob"));
@@ -357,15 +401,26 @@ public class MainView {
         auctionHouse.registerUser(new Bidder(5, "Elias", 500, new RandomStrategy(), ItemCategory.ANY));
     }
 
+    /**
+     * Synchronisiert die Tabellen mit dem aktuellen Zustand des AuctionHouse.
+     */
     private void refreshTables() {
         users.setAll(auctionHouse.getUsers());
         auctions.setAll(auctionHouse.getAuctions());
     }
 
+    /**
+     * Schreibt eine Nachricht in das Log-Feld.
+     *
+     * @param msg anzuzeigende Nachricht.
+     */
     private void log(String msg) {
         output.appendText(msg + "\n");
     }
 
+    /**
+     * Entfernt den im UI ausgewählten Bieter aus dem System.
+     */
     private void removeSelectedBidder() {
         User selected = usersTable.getSelectionModel().getSelectedItem();
         if (selected == null) {

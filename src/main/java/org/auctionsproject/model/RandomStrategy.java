@@ -6,6 +6,9 @@ import java.util.concurrent.ThreadLocalRandom;
  * Zufälliges Verhalten mit Grundwahrscheinlichkeit.
  */
 public class RandomStrategy implements BidStrategy {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean acceptPrice(Item item, double currentPrice, double budget) {
         if (currentPrice > budget) return false;
@@ -14,6 +17,9 @@ public class RandomStrategy implements BidStrategy {
         return ThreadLocalRandom.current().nextDouble() < chance;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Random";

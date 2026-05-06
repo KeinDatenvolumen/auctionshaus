@@ -6,6 +6,9 @@ import java.util.concurrent.ThreadLocalRandom;
  * Konservativ: wartet länger.
  */
 public class ConservativeStrategy implements BidStrategy {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean acceptPrice(Item item, double currentPrice, double budget) {
         if (currentPrice > budget) return false;
@@ -14,6 +17,9 @@ public class ConservativeStrategy implements BidStrategy {
         return ratio <= randomValue;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Conservative";

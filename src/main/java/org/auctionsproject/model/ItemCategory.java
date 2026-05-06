@@ -1,12 +1,22 @@
 package org.auctionsproject.model;
 
+/**
+ * Kategorien für Items und Bieterinteressen.
+ */
 public enum ItemCategory {
+    /** Elektronikartikel. */
     ELEKTRONIK,
+    /** Fahrzeuge und Autoteile. */
     AUTO,
+    /** Bücher und Medien. */
     BUCH,
+    /** Modeartikel. */
     MODE,
+    /** Möbelstücke. */
     MOEBEL,
+    /** Sonstige Kategorien. */
     SONSTIGES,
 
-    ANY // nur für Bieter-Interesse
+    /** Keine Präferenz, nur für Bieter-Interesse. */
+    ANY
 }
