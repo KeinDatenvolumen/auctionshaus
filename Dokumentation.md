@@ -258,7 +258,7 @@ Die JSON-Datei besteht aus drei Hauptbereichen: `users`, `auctions` und `report`
 
 Diese Struktur ermöglicht eine vollständige Wiederherstellung des Zustands. Gleichzeitig bleibt die Datei überschaubar und kann bei Bedarf manuell inspiziert oder erweitert werden.
 
-### 8.3 ObjectMapper-Konfiguration
+### 8.4 ObjectMapper-Konfiguration
 
 Der ObjectMapper ist mit dem `JavaTimeModule` vorbereitet und nutzt `INDENT_OUTPUT`. Dadurch ist die JSON-Datei nicht nur maschinenlesbar, sondern auch für Menschen verständlich.
 
@@ -348,16 +348,6 @@ Gleichzeitig bleibt die Testbarkeit durch die klare Trennung von UI und Service 
 1. Maven-Build ausführen
 2. JavaFX-Anwendung starten (`Launcher`)
 
-### 12.2 Konfigurationsparameter
-
-Die Simulation kann durch zwei Parameter gesteuert werden: **Parallel-Auktionen** und **Tick (ms)**. Die Anzahl paralleler Auktionen bestimmt die Größe des Worker-Pools und damit die gleichzeitige Ausführung. Der Tick definiert den zeitlichen Abstand zwischen Preisreduzierungen. Kleine Werte führen zu schnellen Simulationen, größere Werte ermöglichen eine detailliertere Beobachtung des Ablaufs.
-
-Diese Parameter sind bewusst frei wählbar, damit das Verhalten je nach Szenario skaliert werden kann. Dadurch kann man sowohl schnelle Tests als auch ausführliche Demonstrationen durchführen.
-
-### 12.3 Beispielhafter Ablauf
-
-Ein typischer Ablauf ist: Nutzer anlegen → Auktion erstellen → Simulation starten → Report anzeigen → Zustand speichern. Dieser Ablauf ist in der Oberfläche direkt nachvollziehbar. Besonders hilfreich ist das Log-Feld, das jeden Schritt dokumentiert und so einen „Protokollcharakter“ besitzt.
-
 ### 12.2 Ablauf in der UI
 
 1. Zuerst Nutzer anlegen (Auktionator + Bieter)
@@ -366,6 +356,16 @@ Ein typischer Ablauf ist: Nutzer anlegen → Auktion erstellen → Simulation st
 4. Report ausgeben oder Zustand speichern
 
 Diese Reihenfolge spiegelt die fachliche Logik des Systems wider und ist daher in der UI direkt nachvollziehbar.
+
+### 12.3 Konfigurationsparameter
+
+Die Simulation kann durch zwei Parameter gesteuert werden: **Parallel-Auktionen** und **Tick (ms)**. Die Anzahl paralleler Auktionen bestimmt die Größe des Worker-Pools und damit die gleichzeitige Ausführung. Der Tick definiert den zeitlichen Abstand zwischen Preisreduzierungen. Kleine Werte führen zu schnellen Simulationen, größere Werte ermöglichen eine detailliertere Beobachtung des Ablaufs.
+
+Diese Parameter sind bewusst frei wählbar, damit das Verhalten je nach Szenario skaliert werden kann. Dadurch kann man sowohl schnelle Tests als auch ausführliche Demonstrationen durchführen.
+
+### 12.4 Beispielhafter Ablauf
+
+Ein typischer Ablauf ist: Nutzer anlegen → Auktion erstellen → Simulation starten → Report anzeigen → Zustand speichern. Dieser Ablauf ist in der Oberfläche direkt nachvollziehbar. Besonders hilfreich ist das Log-Feld, das jeden Schritt dokumentiert und so einen „Protokollcharakter“ besitzt.
 
 ---
 
