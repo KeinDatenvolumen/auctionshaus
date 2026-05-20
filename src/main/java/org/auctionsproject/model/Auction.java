@@ -3,6 +3,7 @@ package org.auctionsproject.model;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.auctionsproject.exception.InvalidPriceException;
 
 /**
  * Niederländische Auktion.
@@ -38,6 +39,9 @@ public class Auction {
         this.auctioneer = auctioneer;
         this.bidders = new CopyOnWriteArrayList<>(bidders);
         this.currentPrice = item.getStartPrice();
+        if(decrementStep <= 0){
+            throw new InvalidPriceException("Reduktionschritt darf nicht negativ sein");
+        }
         this.decrementStep = decrementStep;
     }
 

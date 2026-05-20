@@ -29,6 +29,7 @@ public class Bidder extends User {
      */
     public Bidder(int id, String name, double budget, BidStrategy strategy, ItemCategory preferredCategory) {
         super(id, name);
+        if(budget <= 0) throw new InsufficientBudgetException("Budget darf nicht negativ sein");
         this.budget = budget;
         setStrategy(strategy);
         this.preferredCategory = preferredCategory;
