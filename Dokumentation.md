@@ -95,7 +95,7 @@ Die wichtigsten Qualitätsziele im Projekt sind:
 2. **Erweiterbarkeit:** Neue Strategien, Kategorien oder zusätzliche Auswertungen können ohne tiefe Eingriffe ergänzt werden.
 3. **Robustheit:** Validierungen (z. B. Preise > 0, Budgetprüfung) verhindern inkonsistente Zustände.
 4. **Parallelität:** Die Simulation unterstützt mehrere parallele Auktionen und zeigt damit eine realistische Lastverteilung.
-5. **Transparenz durch Logging:** Über UI-Logs wird der Simulationverlauf sichtbar gemacht.
+5. **Transparenz durch Logging:** Über UI-Logs wird der Simulationsverlauf sichtbar gemacht.
 
 Diese Ziele haben die Wahl der technischen Lösungen direkt beeinflusst, insbesondere die Paketstruktur und die Nutzung thread-sicherer Collections.
 
