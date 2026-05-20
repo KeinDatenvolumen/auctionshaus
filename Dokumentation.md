@@ -268,7 +268,7 @@ Der ObjectMapper ist mit dem `JavaTimeModule` vorbereitet und nutzt `INDENT_OUTP
 
 Die UI ist bewusst minimalistisch umgesetzt. JavaFX wurde gewählt, weil:
 
-- Es ein fester Bestandteil der Java-Ökosysteme ist.
+- Es ein fester Bestandteil des Java-Ökosystems ist.
 - Es ohne externe Frameworks eine solide Desktop-Oberfläche ermöglicht.
 - Es gute Unterstützung für Tabellen und Dialoge bietet.
 
